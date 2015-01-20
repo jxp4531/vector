@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <title>xy</title>
+    <style type="text/css">
+        *{margin:0;padding:0;}
+        body, canvas, div {
+            -moz-user-select: none;
+            -webkit-user-select: none;
+            -ms-user-select: none;
+            -khtml-user-select: none;
+            -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+        }
+    </style>
+    <script src="easeljs-0.8.0.min.js"></script>
+    <script src="vector2.js"></script>
+</head>
+<body>
+<canvas id="gameCanvas" width="640" height="960"></canvas>
+<script>
+    (function(){
+        var stage,
+            container,
+            squareArray = new Array(),
+            vectorArray = new Array();
+        
+        function createSquares (width, height, xdiv, ydiv) {
+            var x, y;
+            for (var i = 0; i < xdiv; i++) {
+                for (var j = 0; j < ydiv; j++) {
+                    x = width * (i / xdiv - 0.4);
+                    y = height * (j / ydiv - 0.4);
+                    var square = new createjs.Bitmap('square.png');
+                    square.x = x;
+                    square.y = y;
+                    container.addChild(square);
+                    console.log(square.x + '||||||||||||' +square.y);
+                    squareArray.push( square ); 
+                    vectorArray.push( new Vector2(x, y) );
+                   
+                }
+            }
+        };
+
+        function init(){
+            stage = new createjs.Stage("gameCanvas");
+            createjs.Touch.enable(stage);
+
+            container = new createjs.Container();
+            container.x = 180;
+            container.y = 280;
+            stage.addChild(container);
+            createSquares(250, 250, 5, 5);
+
+            createjs.Ticker.framerate = 60;
+            createjs.Ticker.addEventListener("tick", handleTick);
+            
+            
+        }
+
+        function handleTick() {
+            rotate(1);
+            stage.update();
+        }
+
+        function rotate(deg){
+            var len = squareArray.length;
+            for (var i = 0; i < len; i++) {
+                vectorArray[i].rotate(deg);
+                squareArray[i].x = vectorArray[i].x;
+                squareArray[i].y = - vectorArray[i].y;//因为Y坐标是和向量坐标相反，所以要反过来
+                //console.log(vectorArray[i].x + '::::::::' +vectorArray[i].y);
+                //console.log(squareArray[i].x + '::::::::' +squareArray[i].y);
+                //console.log(container.x + '_______' +container.y);
+
+            }
+            
+        }
+
+        init();
+    })();
+</script>
+
+</body>
+</html>

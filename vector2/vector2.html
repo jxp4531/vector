@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>xy</title>
+        <style type="text/css">
+        *{margin:0;padding:0;}
+        canvas{display:block;margin:10px auto 0;}
+    </style>
+    <script src="vector2.js"></script>
+</head>
+<body>
+<div id="js-test" style="background:red;width:200px;height:200px;">测试</div>
+<script>
+    var v = new Vector2(100,-50);
+    var test = document.getElementById('js-test');
+    
+    test.style.marginLeft = v.x + 'px';
+    test.style.marginTop = - v.y + 'px';
+    //也可以拿position,top,left举例
+   
+    console.log(v.getDegree());
+    v.rotate(-45);//向右旋转45度
+    console.log(v.x, v.y);
+
+    //test.style.marginLeft = v.x + 'px';
+    //test.style.marginTop = - v.y + 'px';
+   
+
+</script>
+</body>
+</html>

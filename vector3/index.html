@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <title>xy</title>
+    <style type="text/css">
+        *{margin:0;padding:0;}
+        body, canvas, div {
+            -moz-user-select: none;
+            -webkit-user-select: none;
+            -ms-user-select: none;
+            -khtml-user-select: none;
+            -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+        }
+    </style>
+    <script src="easeljs-0.8.0.min.js"></script>
+    <script src="vector3.js"></script>
+</head>
+<body>
+<canvas id="gameCanvas" width="640" height="960"></canvas>
+<script>
+    (function(){
+        var stage,
+            container,
+            squareArray = new Array(),
+            vectorArray = new Array();
+        //创建25个菱形
+        function createSquares (width, height, xdiv, ydiv) {
+            var x, y;
+            for (var i = 0; i < xdiv; i++) {
+                for (var j = 0; j < ydiv; j++) {
+                    x = width * (i / xdiv - 0.4);//减去0.4可以刚好让中心的菱形X坐标为0
+                    y = height * (j / ydiv - 0.4);//减去0.4可以刚好让中心的菱形Y坐标为0
+                    var square = new createjs.Bitmap('square.png');
+                    square.x = x;
+                    square.y = y;
+                    //容器把菱形都包裹起来
+                    container.addChild(square);
+                    //打印所有的菱形坐标，围绕着中心菱形四处散开
+                   // console.log(square.x + '||||||||||||' +square.y);
+                    squareArray.push( square ); 
+                    //把向量放进一个数组里，后期方便操控，z不传默认就是0
+                    vectorArray.push( new Vector3(x, y) );
+                }
+            }
+        };
+
+        function init(){
+
+            stage = new createjs.Stage("gameCanvas");
+            createjs.Touch.enable(stage);
+            //监听鼠标移动，兼容touch
+            stage.addEventListener("stagemousemove", handleMouseMove);
+
+            container = new createjs.Container();
+            //创建一个容器，把菱形都包裹起来，并设置容器坐标，方便控制所有菱形
+            //其实可以看到，中心菱形的全局坐标(相对stage的坐标)就是该容器的全局坐标
+            container.x = 180;
+            container.y = 180;
+            stage.addChild(container);
+            //触发创建菱形，xy各5个
+            createSquares(250, 250, 5, 5);
+            //设置每秒60帧
+            createjs.Ticker.framerate = 60;
+            //开始监听
+            createjs.Ticker.addEventListener("tick", handleTick);
+            
+        }
+
+        function handleTick(e) {
+            handleMouseMove();
+            stage.update();
+        }
+        //绕xy轴旋转
+        function rotate(x, y){
+            var len = squareArray.length;
+            for (var i = 0; i < len; i++) {
+                vectorArray[i].rotateXY(x, y);
+                //计算透视比例
+                var pers = vectorArray[i].getPerspective();
+                //把三维投射到二维屏幕上
+                var screenPos = vectorArray[i].persProjectNew(pers);
+                //vectorArray[i].persProject(pers);
+                //把得到的坐标赋值给菱形，因为Y坐标是和向量坐标相反，所以要反过来
+                squareArray[i].x = screenPos.x;
+                squareArray[i].y = - screenPos.y;
+                //squareArray[i].x = vectorArray[i].x;
+                //squareArray[i].y = - vectorArray[i].y;
+                //根据透视比设置菱形的缩放
+                squareArray[i].scaleX = squareArray[i].scaleY = 1.2 * pers;
+                //setChildIndex的值不能超过24，而z值较大所以要除以10
+                //据观察除以10后位于-12到12之间，而z越大，菱形就越远，所以层级应该更低，所以用12减去
+                container.setChildIndex(squareArray[i], 12 - (vectorArray[i].z / 10));
+                //console.log(squareArray[i].x + '::::::::' +squareArray[i].y+ '::::::::' +12 - (vectorArray[i].z / 10));
+                //console.log(squareArray[i].x + '::::::::' +squareArray[i].y+ '::::::::' +pers);
+                //console.log(squareArray[12].x + '_______' +squareArray[12].y);
+                //console.log(squareArray[20].x + '_______' +squareArray[20].y);
+                //console.log(vectorArray[20].persProjectNew(vectorArray[20].getPerspective()).y);
+            }
+        }
+
+        function handleMouseMove(evt) {
+            //把全局鼠标坐标转换为容器内部坐标
+            var xy = container.globalToLocal(stage.mouseX, stage.mouseY);
+            rotate( xy.y / 80, xy.x / 80 );
+            //rotate( stage.mouseY / 80, stage.mouseX / 80 );
+        }
+
+        init();
+    })();
+</script>
+
+</body>
+</html>
