@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>xy</title>
+        <style type="text/css">
+        *{margin:0;padding:0;}
+        canvas{display:block;margin:10px auto 0;}
+    </style>
+    <!--<script src="http://s0.qhimg.com/static/6dee1b004b2a2496/jquery,require,qw.core.js" ></script>-->
+</head>
+<body>
+<canvas id="g" width="550" height="400"></canvas>
+<script>
+    function canvasXY() {
+        var canvas = document.getElementById("g"),
+        context = canvas.getContext("2d");
+        context.beginPath();
+        /*坐标系网格*/
+        for (var x = 0.5; x < 550; x += 10) {
+            context.moveTo(x, 0);
+            context.lineTo(x, 400);
+        }
+        for (var y = 0.5; y < 400; y += 10) {
+            context.moveTo(0, y);
+            context.lineTo(550, y);
+        }
+        //网格颜色
+        context.strokeStyle = "#cecece";
+        context.stroke();
+
+        //重新开始画
+        context.beginPath();
+        /*箭头上半部分*/
+        context.moveTo(50, 150);
+        context.lineTo(300, 150);
+        context.moveTo(250, 100);
+        context.lineTo(300, 150);
+        context.moveTo(300, 50);
+        context.lineTo(250, 100);
+        context.moveTo(450, 200);
+        context.lineTo(300, 50);
+
+        /*箭头下半部分*/
+        context.moveTo(50, 250);
+        context.lineTo(300, 250);
+        context.moveTo(250, 300);
+        context.lineTo(300, 250);
+        context.moveTo(300, 350);
+        context.lineTo(250, 300);
+        context.moveTo(450, 200);
+        context.lineTo(300, 350);
+        /*左侧闭合*/
+        context.moveTo(50, 150);
+        context.lineTo(50, 250);
+
+        /*坐标标注*/
+        context.font = "bold 12px sans-serif";
+        context.fillText("( 0 , 0 )", 8, 5);
+        context.fillText("(50, 150)", 58, 155);
+        context.fillText("(300, 150)", 308, 155);
+        context.fillText("(250, 100)", 258, 105);
+        context.fillText("(300, 150)", 308, 155);
+        context.fillText("(300, 50)", 308, 55);
+        context.fillText("(50, 250)", 58, 255);
+        context.fillText("(300, 250)", 308, 255);
+        context.fillText("(250, 350)", 258, 355);
+        context.fillText("(450, 200)", 458, 205);
+        //设置箭头颜色
+        context.strokeStyle = "#f00";
+        context.stroke();
+        //保存当前
+        context.save();
+
+        //又画了一个图案
+        //上节canvas API初探知识点回顾：改变画布：改变坐标轴和坐标轴原点，比如移动translate，缩放scale，旋转rotate
+        context.fillStyle = "#ff0000";
+        context.fillRect(0, 0, 400, 300);
+        context.translate(200, 25);
+        context.fillStyle = "#000";
+
+        for(var i = 0; i < 60; i++){
+            context.translate(25, 25);
+            context.scale(0.95, 0.95);
+            context.rotate(Math.PI / 10);
+            context.fillRect(0, 0, 100, 50);
+        }
+
+        //恢复
+        context.restore();
+        //旋转画布，画矩形的效果
+        context.rotate(20*Math.PI/180);
+        context.fillRect(0,0,100,50);
+
+    }
+    canvasXY();
+
+
+
+
+
+
+    function domXY(){
+        document.onmousemove = function(e){
+          //  console.log(e.x+'---'+e.y);
+        }
+        var dom = document.createElement('div');
+        dom.id = 'test';
+        dom.style.background = '#000';
+        dom.style.width = '100px';
+        dom.style.height = '500px';
+
+        dom.style.position = 'absolute';
+        dom.style.left = '-50px';
+        dom.style.top = '50px';
+        document.body.appendChild(dom);
+
+        document.onscroll = function(){
+            var rect = dom.getBoundingClientRect();
+            console.log(rect);
+            console.log('X:'+rect.left + '+'+ document.body.scrollLeft);
+            console.log('Y:'+rect.top + '+'+ document.body.scrollTop);
+            // console.log('jquery的X:'+$('#test').offset().left);
+            // console.log('jquery的Y:'+$('#test').offset().top);
+        }
+    }
+    domXY();
+    </script>
+</body>
+</html>
