@@ -14,8 +14,8 @@
             -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
         }
     </style>
-    <script src="easeljs-0.8.0.min.js"></script>
-    <script src="vector2.js"></script>
+    <script src="../lib/easeljs-0.8.0.min.js"></script>
+    <script src="../lib/vector2.js"></script>
 </head>
 <body>
 <canvas id="gameCanvas" width="640" height="960"></canvas>
@@ -32,7 +32,7 @@
                 for (var j = 0; j < ydiv; j++) {
                     x = width * (i / xdiv - 0.4);
                     y = height * (j / ydiv - 0.4);
-                    var square = new createjs.Bitmap('square.png');
+                    var square = new createjs.Bitmap('../images/square.png');
                     square.x = x;
                     square.y = y;
                     container.addChild(square);

@@ -14,8 +14,8 @@
             -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
         }
     </style>
-    <script src="easeljs-0.8.0.min.js"></script>
-    <script src="vector3.js"></script>
+    <script src="../lib/easeljs-0.8.0.min.js"></script>
+    <script src="../lib/vector3.js"></script>
 </head>
 <body>
 <canvas id="gameCanvas" width="640" height="960"></canvas>
@@ -32,7 +32,7 @@
                 for (var j = 0; j < ydiv; j++) {
                     x = width * (i / xdiv - 0.4);//减去0.4可以刚好让中心的菱形X坐标为0
                     y = height * (j / ydiv - 0.4);//减去0.4可以刚好让中心的菱形Y坐标为0
-                    var square = new createjs.Bitmap('square.png');
+                    var square = new createjs.Bitmap('../images/square.png');
                     square.x = x;
                     square.y = y;
                     //容器把菱形都包裹起来
